@@ -8,7 +8,7 @@ ContainerImplementation [kcontainer lb Handler rb] = [[${kcontainer}${lb}${Handl
 
 Handler [@PersistentVariable @Transition] = [[${PersistentVariable}${Transition}]]
 
-PersistentVariable [kpersistent NameRef] = [[\n${kpersistent} ${NameRef}]]
+PersistentVariable [kpersistent NameRef] = [[\nthis.${NameRef} = undefined;]]
 
 Transition [kon SourcePort kcolon @Code] = [[\n${kon}${SourcePort}${kcolon}${Code}]]
 
