@@ -1,0 +1,6 @@
+name {
+main =
+    | other* "❲" main "❳" main? -- bracketed
+    | other+ -- pre
+other = ~"❲" ~"❳" any
+}

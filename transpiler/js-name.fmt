@@ -1,0 +1,3 @@
+main_bracketed [@other lb main1 rb main2] = [[${other}${fmt.unspace (main1)}${main2}]]
+main_pre [@x] = [[${x}]]
+other [c] = [[${c}]]

@@ -1,31 +1,31 @@
-Main [kcomp NameDef @InputPort karrow @OutputPort @Implementation] = [[${kcomp}${NameDef}${InputPort}${karrow}${OutputPort}${Implementation}]]
+Main [kcomp NameDef @InputPort karrow @OutputPort @Implementation] = [[function ${fmt.capitalize (NameDef)} () {\n${Implementation}\n}]]
 
 Implementation [lb x rb] = [[${lb}${x}${rb}]]
 
-LeafImplementation [kleaf lb Handler rb] = [[${kleaf}${lb}${Handler}${rb}]]
+LeafImplementation [kleaf lb Handler rb] = [[${Handler}]]
 
-ContainerImplementation [kcontainer lb Handler rb] = [[${kcontainer}${lb}${Handler}${rb}]]
+ContainerImplementation [kcontainer lb Handler rb] = [[${Handler}]]
 
-Handler [@PersistentVariable @Transition] = [[${PersistentVariable}${Transition}]]
+Handler [@PersistentVariable @Transition] = [[${PersistentVariable}\nthis.handler = function (self, message) {\n${Transition}\n}]]
 
 PersistentVariable [kpersistent NameRef] = [[\nthis.${NameRef} = undefined;]]
 
-Transition [kon SourcePort kcolon @Code] = [[\n${kon}${SourcePort}${kcolon}${Code}]]
+Transition [kon SourcePort kcolon @Code] = [[\nif (message.port === "${SourcePort}") {\n${Code}\n\}]]
 
-Code_save [ksave karrow NameRef] = [[\n${ksave}${karrow}${NameRef}]]
+Code_save [ksave karrow NameRef] = [[\nthis.${NameRef} = message.data;]]
 Code_temp [TempVariable] = [[${TempVariable}]]
 Code_if [IfStatement] = [[${IfStatement}]]
-Code_do [kdo verbatim] = [[\n${kdo}${verbatim}]]
+Code_do [kdo verbatim] = [[\n${verbatim}]]
 Code_send [ksend Expression karrow SinkPort] = [[\n${ksend} ${Expression}${karrow}${SinkPort}]]
 
-TempVariable [ktemp Expression karrow NameDef] = [[\n${ktemp} ${Expression}${karrow}${NameDef}]]
+TempVariable [ktemp Expression karrow NameDef] = [[\nlet ${NameDef} = ${Expression};]]
 IfStatement [kif lp Expression rp lb @Code rb kelse lb2 @Code2 rb2] = [[\n${kif} ${lp}${Expression}${rp}${lb}${Code}\n${rb}${kelse}${lb2}${Code2}\n${rb2}]]
 
 Expression [x] = [[${x}]]
 
 operand [NameRef] = [[${NameRef}]]
 
-Port [lb NameRef rb] = [[${lb}${NameRef}${rb}]]
+Port [lb NameRef rb] = [[${NameRef}]]
 InputPort [Port] = [[${Port}]]
 OutputPort [Port] = [[${Port}]]
 SourcePort [Port] = [[${Port}]]
