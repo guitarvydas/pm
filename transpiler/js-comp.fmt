@@ -6,7 +6,7 @@ LeafImplementation [kleaf lb Handler rb] = [[${Handler}]]
 
 ContainerImplementation [kcontainer lb Handler rb] = [[${Handler}]]
 
-Handler [@PersistentVariable @Transition] = [[${PersistentVariable}\nthis.handler = function (self, message) {\n${Transition}\n}]]
+Handler [@PersistentVariable @Transition] = [[\nthis.outputqueue = [];${PersistentVariable}\nthis.handler = function (self, message) {\n${Transition}\n}]]
 
 PersistentVariable [kpersistent NameRef] = [[\nthis.${NameRef} = undefined;]]
 
@@ -16,7 +16,7 @@ Code_save [ksave karrow NameRef] = [[\nthis.${NameRef} = message.data;]]
 Code_temp [TempVariable] = [[${TempVariable}]]
 Code_if [IfStatement] = [[${IfStatement}]]
 Code_do [kdo verbatim] = [[\n${verbatim}]]
-Code_send [ksend Expression karrow SinkPort] = [[\n${ksend} ${Expression}${karrow}${SinkPort}]]
+Code_send [ksend Expression karrow SinkPort] = [[\nthis.outputqueue.push (\{"${SinkPort}", ${Expression}\});]]
 
 TempVariable [ktemp Expression karrow NameDef] = [[\nlet ${NameDef} = ${Expression};]]
 IfStatement [kif lp Expression rp lb @Code rb kelse lb2 @Code2 rb2] = [[\n${kif} ${lp}${Expression}${rp}${lb}${Code}\n${rb}${kelse}${lb2}${Code2}\n${rb2}]]
