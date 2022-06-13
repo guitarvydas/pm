@@ -1,0 +1,17 @@
+comp ohmMatcher ⟨src⟩ ⟨❲grammar name❳⟩ ⟨❲grammar text❳⟩ ⟨go⟩ ⤇ ⟨❲ohm grammar❳⟩ ⟨❲match object❳⟩ {
+  persistent ❲grammar name❳
+  persistent ❲grammar text❳
+  persistent src
+  on src:            save to src
+  on ❲grammar name❳: save to ❲grammar name❳
+  on ❲grammar text❳: save to ❲grammar text❳
+  on go: 
+    send ⟨❲ohm grammar❳⟩ ⟪ohm.grammars (❲grammar text❳)[❲grammar name❳]⟫
+    temp ⟪ohm.match (src)⟫ ⇉ cst
+    send ⟨❲match object❳⟩ cst
+}
+
+type go = trigger
+type grammar = ohmGrammar
+type src = string
+type grammartext = string

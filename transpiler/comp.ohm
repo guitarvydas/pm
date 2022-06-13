@@ -1,0 +1,53 @@
+comp {
+  Main = "comp" NameDef InputPort+ "⤇" OutputPort+ Implementation?
+
+  Implementation = "{" (LeafImplementation | ContainerImplementation) "}"
+
+  LeafImplementation = "leaf" "{" Handler "}"
+
+  ContainerImplementation = "container" "{" Handler "}"
+
+  Handler = PersistentVariable+ Transition+
+
+  PersistentVariable = "persistent" NameRef
+
+  Transition = "on" SourcePort ":" Code+
+
+  Code =
+    | "save" "⇉" NameRef -- save
+    | TempVariable -- temp
+    | IfStatement -- if
+    | "do" verbatim -- do
+    | "send" Expression "⤇" SinkPort -- send
+
+  TempVariable = "temp" Expression "⇉" NameDef
+  IfStatement = "if" "(" Expression ")" "{" Code+ "}" "else" "{" Code+ "}"
+
+  Expression =
+    | verbatim
+    | Operand
+
+  Operand =
+    | NameRef
+
+  Port = "⟨" NameRef "⟩"
+  InputPort = Port
+  OutputPort = Port
+  SourcePort = Port
+  SinkPort = Port
+
+  Name =
+    | "❲" (~"❳" any)* "❳" -- bracketed
+    | ident -- single
+
+  NameDef = Name
+  NameRef = Name
+    
+  verbatim = "⟪" (~"⟫" any)* "⟫"
+  
+  ident = ident1 identrest*
+  
+  ident1 = "_" | letter
+  identrest = alnum | ident1
+}
+

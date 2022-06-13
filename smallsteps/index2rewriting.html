@@ -8,7 +8,7 @@ textarea {
 </head>
 <body>
 
-<h1>Example Ohm-JS Setup</h1>
+<h1>Adding Rewrite Rules (Semantics)</h1>
 
 <p>source:</p>
 <textarea id="src" rows="5" cols="90" placeholder="src" style="background-color:oldlace;">a</textarea>
@@ -35,11 +35,34 @@ baseline {
 }
 `);
 
+  const rewriteRules = {
+      main: function (_matched) {
+	  var walked = _matched.walk ();
+	  return `got /${walked}/`;
+      },
+      
+      // required by Ohm-JS...
+      _terminal: function () { return this.sourceString; },
+      _iter: function (...children) {
+	  var mapped = children.map(c => {
+	      var r = c.walk ();
+	      return r;
+	  });
+	  return mapped;
+      }
+  };
+
   function baseline () {
       let src = document.getElementById('src').value;
       let matchResult = grammar.match (src);
       if (matchResult.succeeded ()) {
           document.getElementById('status').innerHTML = "OK";
+          let sem = grammar.createSemantics ();
+          sem.addOperation ('walk ()', rewriteRules);
+          let treeWalker = sem (matchResult);
+          let text = treeWalker.walk ();
+          var s = text.toString ();
+          document.getElementById('output').value = s;
       } else {
           document.getElementById('output').value = grammar.trace (src);
           document.getElementById('status').innerHTML = "parse FAILED";

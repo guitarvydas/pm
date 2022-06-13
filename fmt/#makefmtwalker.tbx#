@@ -1,0 +1,22 @@
+comp ❲make Fmt Walker❳ ⟨go⟩ ⟨grammar⟩ ⟨operation name⟩ ⟨operation hooks⟩ ⤇ ⟨walker⟩ {
+  persistent grammar
+  on ⟨grammar⟩: save to grammar
+  on ⟨go⟩:
+    temp ⟪grammar.createSemantics ()⟫ ⇉ sem
+    ⟪sem.addOperation (❲operation name❳, ❲operation hooks❳)⟫
+    send ⟨walker⟩ ⟪sem (cst)[❲operation name❳]()⟫
+
+  // persistent ❲grammar text❳
+  // persistent src
+  // on src:            save to src
+  // on ❲grammar name❳: save to ❲grammar name❳
+  // on ❲grammar text❳: save to ❲grammar text❳
+  // on go: 
+  //   send ⟨❲ohm grammar❳⟩ ⟪ohm.grammars (❲grammar text❳)[❲grammar name❳]⟫
+  //   temp ⟪ohm.match (src)⟫ ⇉ cst
+  //   send ⟨❲match object❳⟩ cst
+}
+
+type go = trigger
+type grammar = ❲Ohm Grammar❳
+type walker = ❲Ohm Walker Skeleton❳

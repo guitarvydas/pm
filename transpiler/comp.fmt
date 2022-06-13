@@ -1,0 +1,45 @@
+Main [kcomp NameDef @InputPort karrow @OutputPort @Implementation] = [[${kcomp}${NameDef}${InputPort}${karrow}${OutputPort}${Implementation}]]
+
+Implementation [lb x rb] = [[${lb}${x}${rb}]]
+
+LeafImplementation [kleaf lb Handler rb] = [[${kleaf}${lb}${Handler}${rb}]]
+
+ContainerImplementation [kcontainer lb Handler rb] = [[${kcontainer}${lb}${Handler}${rb}]]
+
+Handler [@PersistentVariable @Transition] = [[${PersistentVariable}${Transition}]]
+
+PersistentVariable [kpersistent NameRef] = [[${kpersistent}${NameRef}]]
+
+Transition [kon SourcePort kcolon @Code] = [[${kon}${SourcePort}${kcolon}${Code}]]
+
+Code_save [ksave karrow NameRef] = [[${ksave}${karrow}${NameRef}]]
+Code_temp [TempVariable] = [[${TempVariable}]]
+Code_if [IfStatement] = [[${IfStatement}]]
+Code_do [kdo verbatim] = [[${kdo}${verbatim}]]
+Code_send [ksend Expression karrow SinkPort] = [[${ksend}${Expression}${karrow}${SinkPort}]]
+
+TempVariable [ktemp Expression karrow NameDef] = [[${ktemp}${Expression}${karrow}${NameDef}]]
+IfStatement [kif lp Expression rp lb @Code rb kelse lb2 @Code2 rb2] = [${kif}${lp}${Expression}${rp}${lb}${Code}${rb}${kelse}${lb2}${Code2}${rb2}]]
+
+Expression [x] = [[${x}]]
+
+Operand [NameRef] = [[${NameRef}]]
+
+Port [lb NameRef rb] = [[${lb}${NameRef}${rb}]]
+InputPort [Port] = [[${Port}]]
+OutputPort [Port] = [[${Port}]]
+SourcePort [Port] = [[${Port}]]
+SinkPort [Port] = [[${Port}]]
+
+Name_bracketed [lb @cs rb] = [[${lb}${cs}${rb}]]
+Name_single [ident] = [[${ident}]]
+
+NameDef [Name] = [[${Name}]]
+NameRef [Name] = [[${Name}]]
+
+verbatim [lb @cs rb] = [[${lb}${cs}${rb}]]
+
+ident [ident1 @identrest] = [[${ident1}${identrest}]]
+
+ident1 [c] = [[${c}]]
+identrest [c] = [[${c}]]

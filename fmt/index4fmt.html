@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+textarea {
+}
+</style>
+</head>
+<body>
+
+<h1>Reordering Text Using FMT</h1>
+
+<p>source:</p>
+<textarea id="src" rows="5" cols="90" placeholder="src" style="background-color:oldlace;">abcdef</textarea>
+
+
+<p>grammar:</p>
+<textarea id="grammar" rows="5" cols="90" placeholder="src" style="background-color:oldlace;"></textarea>
+
+<p>fmt:</p>
+<textarea id="fmt" rows="5" cols="90" placeholder="src" style="background-color:oldlace;"></textarea>
+
+<p>fmt to js:</p>
+<textarea id="fmt2js" rows="17" cols="90" placeholder="src" style="background-color:oldlace;"></textarea>
+
+<p>modified:</p>
+<textarea id="output" rows="5" cols="90" placeholder="transpiled"  readonly style="background-color:whitesmoke;">
+</textarea>
+<br>
+<br>
+<p id="status" > READY </p>
+
+<!-- Ohm-JS -->
+<script src="https://unpkg.com/ohm-js@16/dist/ohm.min.js"></script>
+
+<script src="../lib/htmllibmatch.js"></script>
+<script src="../lib/htmllibfmt.js"></script>
+
+<br>
+<button onclick="baseline ()">Test</button>
+<script>
+
+const grammar = String.raw`
+baseline {
+  main = "abc" "def"
+}
+`;
+
+  const rewriteRules = `
+main [m1 m2] = [[fmt reordered (\${m2}) (\${m1})]]
+`;
+  
+  function baseline () {
+      document.getElementById('grammar').innerHTML = grammar;
+      document.getElementById('fmt').innerHTML = rewriteRules;
+      let src = document.getElementById('src').value;
+      let [srcSuccess, walkerSkeleton] = ohmMatch (src, "baseline", grammar);
+      if (srcSuccess) {
+	  let [fmtSuccess, transpiledString] = fmt (walkerSkeleton, rewriteRules);
+
+      let [success, transpiledString] = fmt (rewriteRules);
+      if (success) {
+          document.getElementById('status').innerHTML = "OK";
+          document.getElementById('fmt2js').value = transpiledString;
+          let semObject = eval('(' + transpiledString + ')'); // compile the transpiled code
+          document.getElementById('output').value = semObject;
+      } else {
+	  let err = sem;
+          document.getElementById('output').value = err;
+          document.getElementById('status').innerHTML = "parse FAILED";
+      }
+  }
+  </script>
+</body>
+</html>
+

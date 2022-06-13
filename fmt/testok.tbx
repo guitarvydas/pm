@@ -1,0 +1,11 @@
+comp testOK ⟨❲match object❳⟩ ⤇ ⟨fail⟩ ⟨continue⟩ {
+  if (❲match object❳.succeeded ()) {
+    send continue m
+  } else {
+    send fail m
+  }
+}
+
+type ❲match Object❳ = ❲ohm match object❳
+type fail = ❲ohm match object❳
+type continue = ❲ohm match object❳

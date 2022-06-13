@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+textarea {
+}
+</style>
+</head>
+<body>
+
+<h1>Reordering Text Using FMT</h1>
+
+<p>source:</p>
+<textarea id="src" rows="5" cols="90" placeholder="src" style="background-color:oldlace;">abcdef</textarea>
+
+
+<p>modified:</p>
+<textarea id="output" rows="7" cols="90" placeholder="transpiled"  readonly style="background-color:whitesmoke;">
+</textarea>
+<br>
+<br>
+<p id="status" > READY </p>
+
+<!-- Ohm-JS -->
+<script src="https://unpkg.com/ohm-js@16/dist/ohm.min.js"></script>
+
+<script src="../lib/libmatch.js"></script>
+
+<br>
+<button onclick="baseline ()">Test</button>
+<script>
+
+const grammar = ohm.grammar(String.raw`
+baseline {
+  main = "abc" "def"
+}
+`);
+
+const rewriteRules = String.raw`
+main [m1 m2] = [[fmt reordered (${m2}) (${m1})]]
+`;
+  
+  const rewriteRules = {
+      main: function (_matched1, _matched2) {
+	  var walked1 = _matched1.walk ();
+	  var walked2 = _matched2.walk ();
+	  return `reordered /${walked2}/ /${walked1}/`;
+      },
+      
+      // required by Ohm-JS...
+      _terminal: function () { return this.sourceString; },
+      _iter: function (...children) {
+	  var mapped = children.map(c => {
+	      var r = c.walk ();
+	      return r;
+	  });
+	  return mapped;
+      }
+  };
+
+  function baseline () {
+      let src = document.getElementById('src').value;
+      let matchResult = grammar.match (src);
+      if (matchResult.succeeded ()) {
+          document.getElementById('status').innerHTML = "OK";
+          let sem = grammar.createSemantics ();
+          sem.addOperation ('walk ()', rewriteRules);
+          let treeWalker = sem (matchResult);
+          let text = treeWalker.walk ();
+          var s = text.toString ();
+          document.getElementById('output').value = s;
+      } else {
+          document.getElementById('output').value = grammar.trace (src);
+          document.getElementById('status').innerHTML = "parse FAILED";
+      }
+  }
+  </script>
+</body>
+</html>
+

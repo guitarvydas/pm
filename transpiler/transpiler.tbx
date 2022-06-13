@@ -1,0 +1,25 @@
+comp transpiler ⟨go⟩ ⟨src⟩ ⟨❲grammar name❳⟩ ⟨❲grammar text❳⟩ ⟨❲hook name❳⟩ ⟨❲semantics hooks❳⟩ ⤇ ⟨❲transpiled text❳⟩ ⟨error⟩ {
+  leaf {
+   persistent src
+   persistent ❲grammar name❳
+   persistent ❲grammar text❳
+   persistent ❲hook name❳
+   persistent ❲semantics hooks❳
+   on ⟨src⟩:               save ⇉ src
+   on ⟨❲grammar name❳⟩:    save ⇉ ❲grammar name❳
+   on ⟨❲grammar text❳⟩:    save ⇉ ❲grammar text❳
+   on ⟨❲hook name❳⟩:       save ⇉ ❲hook name❳
+   on ⟨❲semantics hooks❳⟩: save ⇉ ❲semantics hooks❳
+   on ⟨go⟩:
+     temp ⟪ohm.grammars[❲grammar text❳,❲grammar name❳]⟫ ⇉ grammar
+     temp ⟪grammars.match (src)⟫ ⇉ cst
+     if (⟪cst.succeeded ()⟫) {
+       temp ⟪grammar.createSemantics ()⟫ ⇉ sem
+       do ⟪sem.addOperation (❲hook name❳, ❲semantics hooks❳) ⟫
+       temp ⟪sem (cst)[hook name]⟫ ⇉ result
+       send result ⤇ ⟨❲transpiled text❳⟩
+     } else {
+       send ⟪grammars.trace (src)⟫ ⤇ ⟨error⟩
+     }
+  }
+}
