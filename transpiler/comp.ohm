@@ -1,5 +1,5 @@
 comp {
-  Main = "comp" NameDef InputPort+ "⤇" OutputPort+ Implementation?
+  Main = "comp" nameDef InputPort+ "⤇" OutputPort+ Implementation?
 
   Implementation = "{" (LeafImplementation | ContainerImplementation) "}"
 
@@ -9,45 +9,48 @@ comp {
 
   Handler = PersistentVariable+ Transition+
 
-  PersistentVariable = "persistent" NameRef
+  PersistentVariable = "persistent" nameRef
 
   Transition = "on" SourcePort ":" Code+
 
   Code =
-    | "save" "⇉" NameRef -- save
+    | "save" "⇉" nameRef -- save
     | TempVariable -- temp
     | IfStatement -- if
     | "do" verbatim -- do
     | "send" Expression "⤇" SinkPort -- send
 
-  TempVariable = "temp" Expression "⇉" NameDef
+  TempVariable = "temp" Expression "⇉" nameDef
   IfStatement = "if" "(" Expression ")" "{" Code+ "}" "else" "{" Code+ "}"
 
   Expression =
     | verbatim
-    | Operand
+    | operand
 
-  Operand =
-    | NameRef
+  operand =
+    | nameRef
 
-  Port = "⟨" NameRef "⟩"
+  Port = "⟨" #nameRef "⟩"
   InputPort = Port
   OutputPort = Port
   SourcePort = Port
   SinkPort = Port
 
-  Name =
+  name =
     | "❲" (~"❳" any)* "❳" -- bracketed
     | ident -- single
 
-  NameDef = Name
-  NameRef = Name
+  nameDef = name
+  nameRef = name
     
   verbatim = "⟪" (~"⟫" any)* "⟫"
   
-  ident = ident1 identrest*
+  keyword = ("save" | "send" | "do" | "temp" | "if" | "else" | "comp" | "leaf" | "container" | "on" | "persistent") &separator
+  ident = ~keyword ident1 identrest*
   
   ident1 = "_" | letter
   identrest = alnum | ident1
+
+  separator = " " | "\n" | "\t"  
 }
 

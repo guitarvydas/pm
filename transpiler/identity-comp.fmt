@@ -8,22 +8,22 @@ ContainerImplementation [kcontainer lb Handler rb] = [[${kcontainer}${lb}${Handl
 
 Handler [@PersistentVariable @Transition] = [[${PersistentVariable}${Transition}]]
 
-PersistentVariable [kpersistent NameRef] = [[${kpersistent}${NameRef}]]
+PersistentVariable [kpersistent NameRef] = [[\n${kpersistent}${NameRef}]]
 
-Transition [kon SourcePort kcolon @Code] = [[${kon}${SourcePort}${kcolon}${Code}]]
+Transition [kon SourcePort kcolon @Code] = [[\n${kon}${SourcePort}${kcolon}${Code}]]
 
-Code_save [ksave karrow NameRef] = [[${ksave}${karrow}${NameRef}]]
+Code_save [ksave karrow NameRef] = [[\n${ksave}${karrow}${NameRef}]]
 Code_temp [TempVariable] = [[${TempVariable}]]
 Code_if [IfStatement] = [[${IfStatement}]]
-Code_do [kdo verbatim] = [[${kdo}${verbatim}]]
-Code_send [ksend Expression karrow SinkPort] = [[${ksend}${Expression}${karrow}${SinkPort}]]
+Code_do [kdo verbatim] = [[\n${kdo}${verbatim}]]
+Code_send [ksend Expression karrow SinkPort] = [[\n${ksend} ${Expression}${karrow}${SinkPort}]]
 
-TempVariable [ktemp Expression karrow NameDef] = [[${ktemp}${Expression}${karrow}${NameDef}]]
-IfStatement [kif lp Expression rp lb @Code rb kelse lb2 @Code2 rb2] = [${kif}${lp}${Expression}${rp}${lb}${Code}${rb}${kelse}${lb2}${Code2}${rb2}]]
+TempVariable [ktemp Expression karrow NameDef] = [[\n${ktemp} ${Expression}${karrow}${NameDef}]]
+IfStatement [kif lp Expression rp lb @Code rb kelse lb2 @Code2 rb2] = [[\n${kif} ${lp}${Expression}${rp}${lb}${Code}\n${rb}${kelse}${lb2}${Code2}\n${rb2}]]
 
 Expression [x] = [[${x}]]
 
-Operand [NameRef] = [[${NameRef}]]
+operand [NameRef] = [[${NameRef}]]
 
 Port [lb NameRef rb] = [[${lb}${NameRef}${rb}]]
 InputPort [Port] = [[${Port}]]
@@ -31,11 +31,11 @@ OutputPort [Port] = [[${Port}]]
 SourcePort [Port] = [[${Port}]]
 SinkPort [Port] = [[${Port}]]
 
-Name_bracketed [lb @cs rb] = [[${lb}${cs}${rb}]]
-Name_single [ident] = [[${ident}]]
+name_bracketed [lb @cs rb] = [[${lb}${cs}${rb}]]
+name_single [ident] = [[${ident}]]
 
-NameDef [Name] = [[${Name}]]
-NameRef [Name] = [[${Name}]]
+nameDef [Name] = [[${Name}]]
+nameRef [Name] = [[${Name}]]
 
 verbatim [lb @cs rb] = [[${lb}${cs}${rb}]]
 
@@ -43,3 +43,6 @@ ident [ident1 @identrest] = [[${ident1}${identrest}]]
 
 ident1 [c] = [[${c}]]
 identrest [c] = [[${c}]]
+
+keyword [kw la_sep] = [[${kw}]]
+separator [c] = [[${c}]]
