@@ -1,22 +1,38 @@
-Main [kcomp NameDef @InputPort karrow @OutputPort @Implementation] = [[function ${fmt.capitalize (NameDef)} () {\n${Implementation}\n}]]
+Main [kcomp NameDef @InputPort karrow @OutputPort @Implementation] = [[function ${fmt.capitalize (NameDef)} () {${Implementation}\n}]]
 
-Implementation [lb x rb] = [[${lb}${x}${rb}]]
+Implementation [lb x rb] = [[${x}]]
 
-LeafImplementation [kleaf lb Handler rb] = [[${Handler}]]
+LeafImplementation [kleaf lb Handler rb] = [[
+this.getOutputMap = function () {
+  let map = {};
+  this.outputqueue.forEach (output => {
+    map [output.port] = output.data;
+  });
+  return map;
+}
+${Handler}]]
 
-ContainerImplementation [kcontainer lb Handler rb] = [[${Handler}]]
+ContainerImplementation [kcontainer lb Handler rb] = [[
+this.outputqueue.forEach (output => {
+    map [output.port] = output.data;
+  });
+  return map;
+}
+${Handler}]]
 
-Handler [@PersistentVariable @Transition] = [[\nthis.outputqueue = [];${PersistentVariable}\nthis.handler = function (self, message) {\n${Transition}\n}]]
+Handler [@PersistentVariable @Transition] = [[\nthis.outputqueue = [];${PersistentVariable}\nthis.handler = function (message) {\nmessage.port = message.port.replace (/ /g, '_');
+${Transition}
+}]]
 
 PersistentVariable [kpersistent NameRef] = [[\nthis.${NameRef} = undefined;]]
 
-Transition [kon SourcePort kcolon @Code] = [[\nif (message.port === "${SourcePort}") {\n${Code}\n\}]]
+Transition [kon SourcePort kcolon @Code] = [[\nif (message.port === "${SourcePort}") {${Code}\n\}]]
 
 Code_save [ksave karrow NameRef] = [[\nthis.${NameRef} = message.data;]]
 Code_temp [TempVariable] = [[${TempVariable}]]
 Code_if [IfStatement] = [[${IfStatement}]]
 Code_do [kdo verbatim] = [[\n${verbatim}]]
-Code_send [ksend Expression karrow SinkPort] = [[\nthis.outputqueue.push (\{"${SinkPort}", ${Expression}\});]]
+Code_send [ksend Expression karrow SinkPort] = [[\nthis.outputqueue.push (\{port: "${SinkPort}", data: ${Expression}\});]]
 
 TempVariable [ktemp Expression karrow NameDef] = [[\nlet ${NameDef} = ${Expression};]]
 IfStatement [kif lp Expression rp lb @Code rb kelse lb2 @Code2 rb2] = [[\n${kif} ${lp}${Expression}${rp}${lb}${Code}\n${rb}${kelse}${lb2}${Code2}\n${rb2}]]

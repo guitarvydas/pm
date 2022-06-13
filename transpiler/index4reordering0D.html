@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+textarea {
+}
+</style>
+</head>
+<body>
+
+<h1>Reordering Text</h1>
+
+<p>source:</p>
+<textarea id="src" rows="5" cols="90" placeholder="src" style="background-color:oldlace;">abcdef</textarea>
+
+
+<p>modified:</p>
+<textarea id="output" rows="7" cols="90" placeholder="transpiled"  readonly style="background-color:whitesmoke;">
+</textarea>
+<br>
+<br>
+<p id="status" > READY </p>
+
+<!-- Ohm-JS -->
+<script src="https://unpkg.com/ohm-js@16/dist/ohm.min.js"></script>
+
+<script src="transpiler.js"></script>
+
+
+<br>
+<button onclick="baseline ()">Test</button>
+<script>
+
+const grammars = String.raw`
+baseline {
+  main = "abc" "def"
+}
+`;
+
+  const rewriteRules = {
+      main: function (_matched1, _matched2) {
+	  var walked1 = _matched1.walk ();
+	  var walked2 = _matched2.walk ();
+	  return `reordered /${walked2}/ /${walked1}/`;
+      },
+      
+      // required by Ohm-JS...
+      _terminal: function () { return this.sourceString; },
+      _iter: function (...children) {
+	  var mapped = children.map(c => {
+	      var r = c.walk ();
+	      return r;
+	  });
+	  return mapped;
+      }
+  };
+
+  function baseline () {
+      let src = document.getElementById('src').value;
+      let transpiler = new Transpiler ();
+      transpiler.handler ({port: "src", data: src});
+      transpiler.handler ({port: "grammar name", data: "baseline"});
+      transpiler.handler ({port: "grammar text", data: grammars});
+      transpiler.handler ({port: "hook name", data: "walk"});
+      transpiler.handler ({port: "semantics hooks", data: rewriteRules});
+      transpiler.handler ({port: "go", data: true});
+      let result = transpiler.getOutputMap ();
+      if (result.success) {
+          document.getElementById('status').innerHTML = "OK";
+          document.getElementById('output').value = result.transpiled_text;
+      } else {
+          document.getElementById('output').value = result.error;
+          document.getElementById('status').innerHTML = "parse FAILED";
+      }
+  }
+  </script>
+</body>
+</html>
+
